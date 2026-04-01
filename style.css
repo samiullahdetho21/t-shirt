@@ -1,0 +1,32 @@
+/* style.css */
+body {
+  transition: background-color 0.3s ease, color 0.2s ease;
+}
+.dark {
+  background-color: black;
+  color: #f3f4f6;
+}
+.product-card {
+  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.3s;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px -12px rgba(0,0,0,0.3);
+}
+.btn-gold {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+}
+.btn-gold:hover {
+  filter: brightness(1.05);
+  transform: scale(1.02);
+}
+/* Cart drawer animation */
+#cartDrawer {
+  transition: transform 0.3s ease-in-out;
+}
+#cartDrawer.open {
+  transform: translateX(0);
+}
+#cartDrawer.closed {
+  transform: translateX(100%);
+}
