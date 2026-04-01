@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop | ThreadForge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+  <!-- Same header as index.html (copy) -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3">
+        <i class="fas fa-tshirt text-3xl text-amber-600 dark:text-amber-500"></i>
+        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-amber-700 to-amber-500 bg-clip-text text-transparent">THREADFORGE</span>
+      </a>
+      <div class="flex items-center gap-5">
+        <button id="themeToggle" class="text-xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+          <i class="fas fa-sun dark:fa-moon"></i>
+        </button>
+        <a href="shop.html" class="hidden md:block hover:text-amber-500 transition">Shop</a>
+        <a href="cart.html" class="relative text-xl">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount" class="absolute -top-2 -right-3 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+        </a>
+        <div class="relative group">
+          <button class="flex items-center gap-1"><i class="fas fa-user"></i> <span id="userName">Account</span></button>
+          <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-md shadow-lg hidden group-hover:block z-20">
+            <a href="login.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">Login</a>
+            <a href="#" id="logoutBtn" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <h1 class="text-4xl font-black">All T‑Shirts</h1>
+      <div class="flex gap-3">
+        <select id="categoryFilter" class="bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+          <option value="all">All Categories</option>
+          <!-- categories will be injected -->
+        </select>
+        <select id="sortSelect" class="bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+          <option value="featured">Featured</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Search..." class="bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+      </div>
+    </div>
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+  </main>
+
+  <footer class="py-12 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 text-sm">
+    <p>© 2025 THREADFORGE — Cinematic Atelier</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Populate category filter
+    const catSelect = document.getElementById("categoryFilter");
+    categories.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      catSelect.appendChild(option);
+    });
+    // Get URL param for initial category
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialCat = urlParams.get("category");
+    if (initialCat && categories.includes(initialCat)) catSelect.value = initialCat;
+
+    let currentFilter = catSelect.value;
+    let currentSort = "featured";
+    let currentSearch = "";
+
+    function renderShopProducts() {
+      let filtered = products.filter(p => {
+        if (currentFilter !== "all" && p.category !== currentFilter) return false;
+        if (currentSearch && !p.name.toLowerCase().includes(currentSearch.toLowerCase())) return false;
+        return true;
+      });
+      if (currentSort === "price_asc") filtered.sort((a,b) => getFinalPrice(a) - getFinalPrice(b));
+      else if (currentSort === "price_desc") filtered.sort((a,b) => getFinalPrice(b) - getFinalPrice(a));
+      else filtered.sort((a,b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+      renderProductCards("productGrid", filtered, true);
+    }
+
+    catSelect.addEventListener("change", () => { currentFilter = catSelect.value; renderShopProducts(); });
+    document.getElementById("sortSelect").addEventListener("change", (e) => { currentSort = e.target.value; renderShopProducts(); });
+    document.getElementById("searchInput").addEventListener("input", (e) => { currentSearch = e.target.value; renderShopProducts(); });
+
+    renderShopProducts();
+  </script>
+</body>
+            </html>
