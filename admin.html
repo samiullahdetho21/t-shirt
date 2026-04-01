@@ -4,25 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | ThreadForge</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body class="bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+  <!-- Header with admin badge -->
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
+      <a href="index.html" class="flex items-center gap-3">
         <i class="fas fa-tshirt text-3xl text-amber-600 dark:text-amber-500"></i>
         <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-amber-700 to-amber-500 bg-clip-text text-transparent">THREADFORGE</span>
-      </div>
+      </a>
       <div class="flex items-center gap-5">
         <button id="themeToggle" class="text-xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
           <i class="fas fa-sun dark:fa-moon"></i>
         </button>
-        <a href="index.html" class="bg-amber-100 dark:bg-amber-900/40 px-4 py-2 rounded-full text-sm font-semibold text-amber-800 dark:text-amber-300">
-          <i class="fas fa-store"></i> Back to Store
-        </a>
+        <a href="index.html" class="bg-amber-100 dark:bg-amber-900/40 px-4 py-2 rounded-full text-sm font-semibold text-amber-800 dark:text-amber-300">Back to Store</a>
       </div>
     </div>
   </header>
@@ -30,18 +29,18 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <h1 class="text-3xl font-black flex items-center gap-2 mb-8"><i class="fas fa-tachometer-alt text-amber-500"></i> Admin Dashboard</h1>
 
-    <!-- Stats Cards -->
+    <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
         <h3 class="text-gray-500 text-sm uppercase">Total Products</h3>
-        <p id="totalProductsStat" class="text-4xl font-bold mt-2">0</p>
+        <p id="totalProducts" class="text-4xl font-bold mt-2">0</p>
       </div>
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
-        <h3 class="text-gray-500 text-sm uppercase">Total Categories</h3>
-        <p id="totalCategoriesStat" class="text-4xl font-bold mt-2">0</p>
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
+        <h3 class="text-gray-500 text-sm uppercase">Categories</h3>
+        <p id="totalCategories" class="text-4xl font-bold mt-2">0</p>
       </div>
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
-        <h3 class="text-gray-500 text-sm uppercase">Mock Orders</h3>
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
+        <h3 class="text-gray-500 text-sm uppercase">Total Orders</h3>
         <p class="text-4xl font-bold mt-2">128</p>
       </div>
     </div>
@@ -69,18 +68,127 @@
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white dark:bg-gray-900 rounded-xl border">
           <thead class="bg-gray-100 dark:bg-gray-800">
-            <tr><th class="p-3 text-left">Image</th><th>Name</th><th>Category</th><th>Price</th><th>Sale</th><th>Actions</th></tr>
+            <tr><th class="p-3 text-left">Image</th><th>Name</th><th>Category</th><th>Price</th><th>Sale</th><th>Actions</th> </tr>
           </thead>
           <tbody id="productTableBody"></tbody>
-        </table>
+         </table>
       </div>
     </div>
   </main>
 
   <footer class="py-12 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 text-sm">
-    <p>© THREADFORGE — Admin Control</p>
+    <p>© 2025 THREADFORGE — Admin Panel</p>
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Admin only: redirect if not admin
+    if (!isAdmin()) {
+      alert("Access denied. Please log in as admin.");
+      window.location.href = "login.html";
+    }
+    // Render functions
+    function renderAdminStats() {
+      document.getElementById("totalProducts").innerText = products.length;
+      document.getElementById("totalCategories").innerText = categories.length;
+      const ctx = document.getElementById("categoryChart").getContext("2d");
+      const counts = categories.map(cat => products.filter(p => p.category === cat).length);
+      new Chart(ctx, {
+        type: 'bar',
+        data: { labels: categories, datasets: [{ label: 'Products', data: counts, backgroundColor: '#d4af37' }] }
+      });
+    }
+    function renderCategoryList() {
+      const container = document.getElementById("categoryListAdmin");
+      container.innerHTML = categories.map(cat => `
+        <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full flex items-center gap-2">
+          <span>${cat}</span>
+          <button class="delete-cat text-red-500" data-cat="${cat}"><i class="fas fa-times-circle"></i></button>
+        </div>
+      `).join('');
+      document.querySelectorAll(".delete-cat").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.dataset.cat;
+          categories = categories.filter(c => c !== cat);
+          products = products.filter(p => p.category !== cat);
+          saveData();
+          renderAdminStats();
+          renderCategoryList();
+          renderProductTable();
+        });
+      });
+    }
+    function renderProductTable() {
+      const tbody = document.getElementById("productTableBody");
+      tbody.innerHTML = products.map(p => `
+        <tr class="border-b">
+          <td class="p-2"><img src="${p.image}" class="w-12 h-12 object-cover rounded"></td>
+          <td>${p.name}</td>
+          <td>${p.category}</td>
+          <td>Rs. ${p.price}</td>
+          <td>${p.salePrice ? "Rs. "+p.salePrice : "-"}</td>
+          <td>
+            <button class="edit-product bg-blue-500 text-white px-2 py-1 rounded text-xs" data-id="${p.id}">Edit</button>
+            <button class="delete-product bg-red-500 text-white px-2 py-1 rounded text-xs ml-1" data-id="${p.id}">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      document.querySelectorAll(".delete-product").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          products = products.filter(p => p.id !== id);
+          saveData();
+          renderAdminStats();
+          renderProductTable();
+        });
+      });
+      document.querySelectorAll(".edit-product").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          const prod = products.find(p => p.id === id);
+          const newName = prompt("Name", prod.name);
+          if (newName) prod.name = newName;
+          const newPrice = prompt("Price", prod.price);
+          if (newPrice) prod.price = parseInt(newPrice);
+          const newSale = prompt("Sale Price (or leave blank)", prod.salePrice || "");
+          prod.salePrice = newSale ? parseInt(newSale) : null;
+          const newCat = prompt("Category", prod.category);
+          if (newCat && categories.includes(newCat)) prod.category = newCat;
+          saveData();
+          renderAdminStats();
+          renderProductTable();
+        });
+      });
+    }
+    document.getElementById("addCategoryBtn").addEventListener("click", () => {
+      const newCat = prompt("Enter new category name (uppercase)");
+      if (newCat && !categories.includes(newCat.toUpperCase())) {
+        categories.push(newCat.toUpperCase());
+        saveData();
+        renderAdminStats();
+        renderCategoryList();
+      }
+    });
+    document.getElementById("addProductBtn").addEventListener("click", () => {
+      const name = prompt("Product name");
+      if (!name) return;
+      const price = parseInt(prompt("Price"));
+      const category = prompt(`Category (${categories.join(", ")})`);
+      if (!categories.includes(category)) {
+        alert("Invalid category");
+        return;
+      }
+      const salePrice = prompt("Sale price (optional)");
+      const image = prompt("Image URL", "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=300&h=400&fit=crop");
+      const newId = Date.now();
+      products.push({ id: newId, name, price, salePrice: salePrice ? parseInt(salePrice) : null, category, image, featured: false, description: "" });
+      saveData();
+      renderAdminStats();
+      renderProductTable();
+    });
+    renderAdminStats();
+    renderCategoryList();
+    renderProductTable();
+  </script>
 </body>
 </html>
