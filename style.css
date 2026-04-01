@@ -16,17 +16,3 @@ body {
 .btn-gold {
   background: linear-gradient(135deg, #d4af37, #b8860b);
 }
-.btn-gold:hover {
-  filter: brightness(1.05);
-  transform: scale(1.02);
-}
-/* Cart drawer animation */
-#cartDrawer {
-  transition: transform 0.3s ease-in-out;
-}
-#cartDrawer.open {
-  transform: translateX(0);
-}
-#cartDrawer.closed {
-  transform: translateX(100%);
-}
