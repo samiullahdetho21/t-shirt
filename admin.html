@@ -10,43 +10,43 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body class="bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-  <!-- Header with admin badge -->
+  <!-- Admin Header -->
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
       <a href="index.html" class="flex items-center gap-3">
-        <i class="fas fa-tshirt text-3xl text-amber-600 dark:text-amber-500"></i>
-        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-amber-700 to-amber-500 bg-clip-text text-transparent">THREADFORGE</span>
+        <i class="fas fa-tshirt text-3xl text-gray-800 dark:text-gray-200"></i>
+        <span class="text-2xl font-black tracking-tight text-gray-900 dark:text-white">THREADFORGE</span>
       </a>
       <div class="flex items-center gap-5">
         <button id="themeToggle" class="text-xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
           <i class="fas fa-sun dark:fa-moon"></i>
         </button>
-        <a href="index.html" class="bg-amber-100 dark:bg-amber-900/40 px-4 py-2 rounded-full text-sm font-semibold text-amber-800 dark:text-amber-300">Back to Store</a>
+        <a href="index.html" class="bg-gray-200 dark:bg-gray-800 px-4 py-2 rounded-full text-sm font-semibold text-gray-800 dark:text-gray-200">Back to Store</a>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h1 class="text-3xl font-black flex items-center gap-2 mb-8"><i class="fas fa-tachometer-alt text-amber-500"></i> Admin Dashboard</h1>
+    <h1 class="text-3xl font-black flex items-center gap-2 mb-8"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
         <h3 class="text-gray-500 text-sm uppercase">Total Products</h3>
         <p id="totalProducts" class="text-4xl font-bold mt-2">0</p>
       </div>
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
         <h3 class="text-gray-500 text-sm uppercase">Categories</h3>
         <p id="totalCategories" class="text-4xl font-bold mt-2">0</p>
       </div>
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow p-6 border border-gray-200 dark:border-gray-800">
         <h3 class="text-gray-500 text-sm uppercase">Total Orders</h3>
         <p class="text-4xl font-bold mt-2">128</p>
       </div>
     </div>
 
     <!-- Chart -->
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 shadow mb-12">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 shadow mb-12 border border-gray-200 dark:border-gray-800">
       <canvas id="categoryChart" height="100"></canvas>
     </div>
 
@@ -54,7 +54,7 @@
     <div class="mb-12">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold"><i class="fas fa-tags"></i> Manage Categories</h2>
-        <button id="addCategoryBtn" class="bg-amber-600 text-white px-4 py-2 rounded-full text-sm"><i class="fas fa-plus"></i> Add Category</button>
+        <button id="addCategoryBtn" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm"><i class="fas fa-plus"></i> Add Category</button>
       </div>
       <div id="categoryListAdmin" class="flex flex-wrap gap-3"></div>
     </div>
@@ -63,10 +63,10 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold"><i class="fas fa-tshirt"></i> Manage Products</h2>
-        <button id="addProductBtn" class="bg-amber-600 text-white px-4 py-2 rounded-full text-sm"><i class="fas fa-plus"></i> Add Product</button>
+        <button id="addProductBtn" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm"><i class="fas fa-plus"></i> Add Product</button>
       </div>
       <div class="overflow-x-auto">
-        <table class="min-w-full bg-white dark:bg-gray-900 rounded-xl border">
+        <table class="min-w-full bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
           <thead class="bg-gray-100 dark:bg-gray-800">
             <tr><th class="p-3 text-left">Image</th><th>Name</th><th>Category</th><th>Price</th><th>Sale</th><th>Actions</th> </tr>
           </thead>
@@ -87,7 +87,7 @@
       alert("Access denied. Please log in as admin.");
       window.location.href = "login.html";
     }
-    // Render functions
+
     function renderAdminStats() {
       document.getElementById("totalProducts").innerText = products.length;
       document.getElementById("totalCategories").innerText = categories.length;
@@ -95,13 +95,14 @@
       const counts = categories.map(cat => products.filter(p => p.category === cat).length);
       new Chart(ctx, {
         type: 'bar',
-        data: { labels: categories, datasets: [{ label: 'Products', data: counts, backgroundColor: '#d4af37' }] }
+        data: { labels: categories, datasets: [{ label: 'Products', data: counts, backgroundColor: '#333' }] },
+        options: { scales: { y: { beginAtZero: true } } }
       });
     }
     function renderCategoryList() {
       const container = document.getElementById("categoryListAdmin");
       container.innerHTML = categories.map(cat => `
-        <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full flex items-center gap-2">
+        <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full flex items-center gap-2 border border-gray-300 dark:border-gray-700">
           <span>${cat}</span>
           <button class="delete-cat text-red-500" data-cat="${cat}"><i class="fas fa-times-circle"></i></button>
         </div>
@@ -109,6 +110,89 @@
       document.querySelectorAll(".delete-cat").forEach(btn => {
         btn.addEventListener("click", () => {
           const cat = btn.dataset.cat;
+          categories = categories.filter(c => c !== cat);
+          products = products.filter(p => p.category !== cat);
+          saveData();
+          renderAdminStats();
+          renderCategoryList();
+          renderProductTable();
+        });
+      });
+    }
+    function renderProductTable() {
+      const tbody = document.getElementById("productTableBody");
+      tbody.innerHTML = products.map(p => `
+        <tr class="border-b border-gray-200 dark:border-gray-800">
+          <td class="p-2"><img src="${p.image}" class="w-12 h-12 object-cover rounded grayscale"> </td>
+          <td>${p.name}</td>
+          <td>${p.category}</td>
+          <td>Rs. ${p.price}</td>
+          <td>${p.salePrice ? "Rs. "+p.salePrice : "-"}</td>
+          <td>
+            <button class="edit-product bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs" data-id="${p.id}">Edit</button>
+            <button class="delete-product bg-red-700 hover:bg-red-600 text-white px-2 py-1 rounded text-xs ml-1" data-id="${p.id}">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      document.querySelectorAll(".delete-product").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          products = products.filter(p => p.id !== id);
+          saveData();
+          renderAdminStats();
+          renderProductTable();
+        });
+      });
+      document.querySelectorAll(".edit-product").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          const prod = products.find(p => p.id === id);
+          const newName = prompt("Name", prod.name);
+          if (newName) prod.name = newName;
+          const newPrice = prompt("Price", prod.price);
+          if (newPrice) prod.price = parseInt(newPrice);
+          const newSale = prompt("Sale Price (or leave blank)", prod.salePrice || "");
+          prod.salePrice = newSale ? parseInt(newSale) : null;
+          const newCat = prompt("Category", prod.category);
+          if (newCat && categories.includes(newCat)) prod.category = newCat;
+          saveData();
+          renderAdminStats();
+          renderProductTable();
+        });
+      });
+    }
+    document.getElementById("addCategoryBtn").addEventListener("click", () => {
+      const newCat = prompt("Enter new category name (uppercase)");
+      if (newCat && !categories.includes(newCat.toUpperCase())) {
+        categories.push(newCat.toUpperCase());
+        saveData();
+        renderAdminStats();
+        renderCategoryList();
+      }
+    });
+    document.getElementById("addProductBtn").addEventListener("click", () => {
+      const name = prompt("Product name");
+      if (!name) return;
+      const price = parseInt(prompt("Price"));
+      const category = prompt(`Category (${categories.join(", ")})`);
+      if (!categories.includes(category)) {
+        alert("Invalid category");
+        return;
+      }
+      const salePrice = prompt("Sale price (optional)");
+      const image = prompt("Image URL", "https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&cs=tinysrgb&w=300&h=400&fit=crop");
+      const newId = Date.now();
+      products.push({ id: newId, name, price, salePrice: salePrice ? parseInt(salePrice) : null, category, image, featured: false, description: "" });
+      saveData();
+      renderAdminStats();
+      renderProductTable();
+    });
+    renderAdminStats();
+    renderCategoryList();
+    renderProductTable();
+  </script>
+</body>
+</html>          const cat = btn.dataset.cat;
           categories = categories.filter(c => c !== cat);
           products = products.filter(p => p.category !== cat);
           saveData();
