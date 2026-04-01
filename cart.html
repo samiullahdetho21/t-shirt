@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart | ThreadForge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+  <!-- same header -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3">
+        <i class="fas fa-tshirt text-3xl text-amber-600 dark:text-amber-500"></i>
+        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-amber-700 to-amber-500 bg-clip-text text-transparent">THREADFORGE</span>
+      </a>
+      <div class="flex items-center gap-5">
+        <button id="themeToggle" class="text-xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+          <i class="fas fa-sun dark:fa-moon"></i>
+        </button>
+        <a href="shop.html" class="hidden md:block hover:text-amber-500 transition">Shop</a>
+        <a href="cart.html" class="relative text-xl">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount" class="absolute -top-2 -right-3 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+        </a>
+        <div class="relative group">
+          <button class="flex items-center gap-1"><i class="fas fa-user"></i> <span id="userName">Account</span></button>
+          <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-md shadow-lg hidden group-hover:block z-20">
+            <a href="login.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">Login</a>
+            <a href="#" id="logoutBtn" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-4xl font-black mb-8">Shopping Cart</h1>
+    <div id="cartContainer" class="grid lg:grid-cols-3 gap-12">
+      <div class="lg:col-span-2 space-y-4">
+        <div id="cartItems" class="space-y-4"></div>
+      </div>
+      <div class="bg-gray-100 dark:bg-gray-900 p-6 rounded-xl h-fit">
+        <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+        <div class="flex justify-between py-2"><span>Subtotal</span><span id="subtotal">Rs. 0</span></div>
+        <div class="flex justify-between py-2"><span>Shipping</span><span>Free</span></div>
+        <div class="border-t my-2"></div>
+        <div class="flex justify-between font-bold text-lg"><span>Total</span><span id="total">Rs. 0</span></div>
+        <a href="checkout.html" class="mt-6 block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-full transition">Proceed to Checkout</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-12 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 text-sm">
+    <p>© 2025 THREADFORGE — Cinematic Atelier</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function renderCart() {
+      const container = document.getElementById("cartItems");
+      if (cart.length === 0) {
+        container.innerHTML = "<p class='text-center text-gray-500'>Your cart is empty. <a href='shop.html' class='text-amber-500'>Continue shopping</a></p>";
+        document.getElementById("subtotal").innerText = "Rs. 0";
+        document.getElementById("total").innerText = "Rs. 0";
+        return;
+      }
+      let html = "";
+      cart.forEach((item, idx) => {
+        html += `
+          <div class="flex gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <img src="${item.image}" class="w-24 h-24 object-cover rounded-md">
+            <div class="flex-1">
+              <h3 class="font-bold">${item.name}</h3>
+              <p class="text-sm text-gray-500">Size: ${item.size}</p>
+              <p class="text-amber-500 font-bold">Rs. ${item.priceToUse.toLocaleString()}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <button class="qty-dec bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded" data-idx="${idx}">-</button>
+                <span>${item.quantity}</span>
+                <button class="qty-inc bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded" data-idx="${idx}">+</button>
+                <button class="remove-item text-red-500 ml-4" data-idx="${idx}"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      const total = getCartTotal();
+      document.getElementById("subtotal").innerText = `Rs. ${total.toLocaleString()}`;
+      document.getElementById("total").innerText = `Rs. ${total.toLocaleString()}`;
+
+      document.querySelectorAll(".qty-dec").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.dataset.idx);
+          const newQty = cart[idx].quantity - 1;
+          updateCartQuantity(idx, newQty);
+          renderCart();
+        });
+      });
+      document.querySelectorAll(".qty-inc").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.dataset.idx);
+          const newQty = cart[idx].quantity + 1;
+          updateCartQuantity(idx, newQty);
+          renderCart();
+        });
+      });
+      document.querySelectorAll(".remove-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.dataset.idx);
+          removeFromCart(idx);
+          renderCart();
+        });
+      });
+    }
+    renderCart();
+  </script>
+</body>
+</html>
